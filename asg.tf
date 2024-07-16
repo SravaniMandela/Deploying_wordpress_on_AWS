@@ -1,4 +1,30 @@
-#!/bin/bash
+resource "aws_autoscaling_group" "app-tier-asg" {
+  name = "app-tier-workload"
+  max_size = 3
+  min_size = 1
+  desired_capacity = 2
+  vpc_zone_identifier = [aws_subnet.private.id,aws_subnet.private2.id]
+  launch_template {
+    id = aws_launch_template.app-tier-lt.id
+    version = aws_launch_template.app-tier-lt.latest_version
+  }
+  tag {
+    key                 = "Name"
+    value               = "app-tier-workload"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_launch_template" "app-tier-lt" {
+  key_name = aws_key_pair.instance_key.key_name
+  image_id = local.ami_id
+  instance_type = local.instance_type
+  vpc_security_group_ids = [aws_security_group.webserver_sg.id]
+  iam_instance_profile {
+    name = aws_iam_instance_profile.app-instance-profile.name
+  }
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
     sudo su
     yum update -y
     mkdir -p /var/www/html
@@ -52,4 +78,10 @@
     sudo sed -i "s/password_here/$db_password/" $wp_config_file
     sudo sed -i "s/localhost/$db_host/" $wp_config_file
     sudo service httpd restart
- 
+    EOF
+  )
+     tags = {
+      "Name" : "app-tier"
+    
+  }
+}

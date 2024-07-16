@@ -39,14 +39,8 @@ health_check {
   }
 }
 
-resource "aws_lb_target_group_attachment" "instance_to_tg_attachment" {
-  target_group_arn = aws_lb_target_group.alb_tg.arn
-  target_id        = aws_instance.ec2p.id
-  port             = 80
-}
 
-resource "aws_lb_target_group_attachment" "instance_to_tg_attachment_2" {
-  target_group_arn = aws_lb_target_group.alb_tg.arn
-  target_id        = aws_instance.ec2p2.id
-  port             = 80
+resource "aws_autoscaling_attachment" "alb_asg_attachment" {
+  autoscaling_group_name = aws_autoscaling_group.app-tier-asg.name
+  lb_target_group_arn = aws_lb_target_group.alb_tg.arn
 }
