@@ -4,7 +4,7 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   ip_address_type = "ipv4"
   security_groups    = [aws_security_group.ALB_sg.id]
-  subnets            = [aws_subnet.pub.id,aws_subnet.pub2.id]
+  subnets            = [aws_subnet.public.id,aws_subnet.public2.id]
 
   enable_deletion_protection = true
   tags = {

@@ -41,7 +41,7 @@
     sudo yum install jq
 
 
-    # get the rds creds from the rds-master secret
+    # get the rds creds from the rds-master-creds secret
     secret_value=$(aws secretsmanager get-secret-value --secret-id rds-master-creds --query SecretString --output text)
     db_host=$(echo $secret_value | jq -r '.host')
     db_username=$(echo $secret_value | jq -r '.username')
@@ -56,4 +56,4 @@
     sudo sed -i "s/password_here/$db_password/" $wp_config_file
     sudo sed -i "s/localhost/$db_host/" $wp_config_file
     sudo service httpd restart
- 
+    

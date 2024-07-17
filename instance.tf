@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret_version" "instance_key_version" {
     resource "aws_instance" "ec2" {
     ami           = local.ami_id
     instance_type = local.instance_type
-    subnet_id     = aws_subnet.pub.id
+    subnet_id     = aws_subnet.public.id
     security_groups = [aws_security_group.ec2_sg.id]
     associate_public_ip_address = true
     key_name      = aws_key_pair.instance_key.key_name
