@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "app-tier-asg" {
-  name = "app-tier-workload"
+  name = "app-tier"
   max_size = 3
   min_size = 1
   desired_capacity = 2
@@ -10,7 +10,7 @@ resource "aws_autoscaling_group" "app-tier-asg" {
   }
   tag {
     key                 = "Name"
-    value               = "app-tier-workload"
+    value               = "app-tier"
     propagate_at_launch = true
   }
 }
@@ -28,7 +28,7 @@ resource "aws_launch_template" "app-tier-lt" {
     sudo su
     yum update -y
     mkdir -p /var/www/html
-    sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-0bc69eae47664510e.efs.us-east-1.amazonaws.com:/ /var/www/html
+    sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-04f58554bc20c3cf3.efs.us-east-1.amazonaws.com:/ /var/www/html
 
     sudo yum update -y
     sudo yum install -y httpd httpd-tools mod_ssl
@@ -62,6 +62,11 @@ resource "aws_launch_template" "app-tier-lt" {
 
     # Install AWS CLI
     sudo yum install -y awscli
+
+    # Install jq
+    sudo yum install epel-release
+    sudo yum install jq
+
 
     # get the rds creds from the rds-master secret
     secret_value=$(aws secretsmanager get-secret-value --secret-id rds-master-creds --query SecretString --output text)

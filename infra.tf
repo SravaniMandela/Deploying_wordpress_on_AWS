@@ -3,11 +3,11 @@ provider "aws" {
   }
   
   resource "aws_vpc" "vpc" {
-    cidr_block       = "10.0.0.0/16"
+    cidr_block       = local.vpc_cidr_block
     instance_tenancy = "default"
   
     tags = {
-      Name = "VPC-A"
+      Name = "VPC-main"
     }
   }
   
@@ -21,8 +21,8 @@ provider "aws" {
 
    resource "aws_subnet" "pub" {
     vpc_id     = aws_vpc.vpc.id
-    cidr_block = "10.0.0.0/24"
-    availability_zone="us-east-1a"
+    cidr_block = local.front_tier_cidr_block_1
+    availability_zone=local.availability_zone
     map_public_ip_on_launch = true
   
     tags = {
@@ -32,8 +32,8 @@ provider "aws" {
 
    resource "aws_subnet" "pub2" {
     vpc_id     = aws_vpc.vpc.id
-    cidr_block = "10.0.1.0/24"
-    availability_zone="us-east-1b"
+    cidr_block = local.front_tier_cidr_block_2
+    availability_zone=local.availability_zone2
     map_public_ip_on_launch = true
   
     tags = {
@@ -43,8 +43,8 @@ provider "aws" {
 
  resource "aws_subnet" "private" {
     vpc_id     = aws_vpc.vpc.id
-    cidr_block = "10.0.2.0/24"
-    availability_zone="us-east-1a"
+    cidr_block = local.app_tier_cidr_block_1
+    availability_zone=local.availability_zone
   
     tags = {
       Name = "VPC-A-Private"
@@ -53,8 +53,8 @@ provider "aws" {
 
    resource "aws_subnet" "private2" {
     vpc_id     = aws_vpc.vpc.id
-    cidr_block = "10.0.3.0/24"
-    availability_zone="us-east-1b"
+    cidr_block = local.app_tier_cidr_block_2
+    availability_zone=local.availability_zone2
   
     tags = {
       Name = "VPC-A-Private2"
@@ -63,8 +63,8 @@ provider "aws" {
 
    resource "aws_subnet" "private3" {
     vpc_id     = aws_vpc.vpc.id
-    cidr_block = "10.0.4.0/24"
-    availability_zone="us-east-1a"
+    cidr_block = local.db_tier_cidr_block_1
+    availability_zone=local.availability_zone
   
     tags = {
       Name = "VPC-A-Private3"
@@ -73,8 +73,8 @@ provider "aws" {
 
    resource "aws_subnet" "private4" {
     vpc_id     = aws_vpc.vpc.id
-    cidr_block = "10.0.5.0/24"
-    availability_zone="us-east-1b"
+    cidr_block = local.db_tier_cidr_block_2
+    availability_zone=local.availability_zone2
   
     tags = {
       Name = "VPC-A-Private4"
@@ -103,7 +103,7 @@ provider "aws" {
     route_table_id = aws_route_table.rt1.id
   }
 
-   resource "aws_route_table" "rt2private" {
+   resource "aws_route_table" "rt_private" {
     vpc_id = aws_vpc.vpc.id
      route {
       cidr_block = "0.0.0.0/0"
@@ -111,11 +111,11 @@ provider "aws" {
     }
   
     tags = {
-      Name = "VPC-A-Private-RT-New"
+      Name = "VPC-A-Private-RT-2"
     }
   }
 
-  resource "aws_route_table" "rt2private2" {
+  resource "aws_route_table" "rt_private2" {
     vpc_id = aws_vpc.vpc.id
      route {
       cidr_block = "0.0.0.0/0"
@@ -130,22 +130,22 @@ provider "aws" {
 
   resource "aws_route_table_association" "a1p" {
     subnet_id      = aws_subnet.private.id
-    route_table_id = aws_route_table.rt2private.id
+    route_table_id = aws_route_table.rt_private.id
   }
 
    resource "aws_route_table_association" "a1p3" {
     subnet_id      = aws_subnet.private3.id
-    route_table_id = aws_route_table.rt2private.id
+    route_table_id = aws_route_table.rt_private.id
   }
 
     resource "aws_route_table_association" "a1p2" {
     subnet_id      = aws_subnet.private2.id
-    route_table_id = aws_route_table.rt2private2.id
+    route_table_id = aws_route_table.rt_private2.id
   }
 
    resource "aws_route_table_association" "a1p4" {
     subnet_id      = aws_subnet.private4.id
-    route_table_id = aws_route_table.rt2private2.id
+    route_table_id = aws_route_table.rt_private2.id
   }
 
   resource "aws_eip" "eip" {

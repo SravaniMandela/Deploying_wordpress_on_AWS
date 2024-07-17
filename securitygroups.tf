@@ -2,26 +2,18 @@
   
     vpc_id = aws_vpc.vpc.id
   
-    ingress {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      security_groups = [aws_security_group.ALB_sg.id]
-    }
-
-    ingress {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      security_groups = [aws_security_group.ALB_sg.id]
-    }
-
-    ingress {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      security_groups = [aws_security_group.ec2_sg.id]
-    }
+ingress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = [local.front_tier_cidr_block_1,local.front_tier_cidr_block_2]
+  }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [local.front_tier_cidr_block_1,local.front_tier_cidr_block_2]
+  }
 
     egress {
       from_port   = 0
@@ -43,15 +35,7 @@
       from_port   = 3306
       to_port     = 3306
       protocol    = "tcp"
-      security_groups = [aws_security_group.webserver_sg.id]
-    }
-
-
-    egress {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = [local.app_tier_cidr_block_1,local.app_tier_cidr_block_2]
     }
   
     tags = {
@@ -68,22 +52,7 @@
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    #cidr_blocks = ["0.0.0.0/0"]
-    security_groups = [aws_security_group.webserver_sg.id]
-    }
-
-    #    ingress {
-    #   from_port   = 2049
-    #   to_port     = 2049
-    #   protocol    = "tcp"
-    #   security_groups = [aws_security_group.EFS_sg.id]
-    # }
-
-         ingress {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      security_groups = [aws_security_group.ec2_sg.id]
+    cidr_blocks = ["0.0.0.0/0"]
     }
 
     egress {
@@ -110,12 +79,19 @@
       cidr_blocks = ["0.0.0.0/0"]
     }
 
+ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
     ingress {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
     egress {
       from_port   = 0
