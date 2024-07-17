@@ -26,7 +26,7 @@ provider "aws" {
     map_public_ip_on_launch = true
   
     tags = {
-      Name = "VPC-A-Public"
+      Name = "VPC-A-Public_tier"
     }
   }
 
@@ -37,7 +37,7 @@ provider "aws" {
     map_public_ip_on_launch = true
   
     tags = {
-      Name = "VPC-A-Public2"
+      Name = "VPC-A-Public_tier2"
     }
   }
 
@@ -47,7 +47,7 @@ provider "aws" {
     availability_zone=local.availability_zone
   
     tags = {
-      Name = "VPC-A-Private"
+      Name = "VPC-A-app-tier"
     }
   }
 
@@ -57,7 +57,7 @@ provider "aws" {
     availability_zone=local.availability_zone2
   
     tags = {
-      Name = "VPC-A-Private2"
+      Name = "VPC-A-app-tier2"
     }
   }
 
@@ -67,7 +67,7 @@ provider "aws" {
     availability_zone=local.availability_zone
   
     tags = {
-      Name = "VPC-A-Private3"
+      Name = "VPC-A-db-tier"
     }
   }
 
@@ -77,7 +77,7 @@ provider "aws" {
     availability_zone=local.availability_zone2
   
     tags = {
-      Name = "VPC-A-Private4"
+      Name = "VPC-A-db-tier2"
     }
   }
 
@@ -111,7 +111,7 @@ provider "aws" {
     }
   
     tags = {
-      Name = "VPC-A-Private-RT-2"
+      Name = "VPC-A-Private-RT"
     }
   }
 
@@ -123,7 +123,7 @@ provider "aws" {
     }
   
     tags = {
-      Name = "VPC-A-Private-RT-New2"
+      Name = "VPC-A-Private-RT2"
     }
   }
 
